@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    command: bash -c "cd api && ls -al && python manage.py collectstatic --clear --noinput && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/api
+    ports:
+      - "8000:8000"

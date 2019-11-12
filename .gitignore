@@ -1,0 +1,4 @@
+*.pyc
+api/static/admin/*
+api/static/rest_framework/*
+*DS_Store
