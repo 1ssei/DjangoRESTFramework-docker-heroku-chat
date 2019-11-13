@@ -45,9 +45,9 @@ create urls.py in chats
 
 7. CRUD is made
 
-8. create permission, 
+8. create permission common file
 
-9. 
+9. create unit test
 
 
 
