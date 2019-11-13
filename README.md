@@ -45,7 +45,7 @@ create urls.py in chats
 
 7. CRUD is made
 
-8. create permission, PATCH is ok?
+8. create permission, 
 
 9. 
 
