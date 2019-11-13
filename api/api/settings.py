@@ -22,8 +22,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'chats',
     'users'
 ]
+
+AUTH_USER_MODEL = 'users.User'
 
 
 MIDDLEWARE = [

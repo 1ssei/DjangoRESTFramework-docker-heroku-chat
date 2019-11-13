@@ -1,7 +1,11 @@
+0. user change
+createsuperuser
+
 1. start server
 docker-compose up 
--> you can see api in localhost:8000,
-you can see admin page in localhost:8000/admin using root/root
+<!-- -> you can see api in localhost:8000,
+you can see admin page in localhost:8000/admin using root/root -->
+
 
 2. create application
 docker exec -it djangorestframework-docker-heroku-chat_web_1 /bin/bash -c "cd api && python manage.py startapp users"
@@ -9,6 +13,10 @@ docker exec -it djangorestframework-docker-heroku-chat_web_1 /bin/bash -c "cd ap
 
 3. add application to project
 api/api/settings.py inst apps "users"
+AUTH_USER_MODEL = 'users.User'
+default user class change
+
+4. create superuser
 
 4. create model
 
@@ -18,4 +26,30 @@ api/api/settings.py inst apps "users"
 
  6. you can create user in admin page
 
- 7. create thread app
+
+
+2. create thread app
+docker exec -it djangorestframework-docker-heroku-chat_web_1 /bin/bash -c "cd api && python manage.py startapp chat"
+
+3. add application to project
+api/api/settings.py inst apps "chats"
+
+4. create thread model
+
+5. create serializer
+
+6. create create view
+
+7. add routing in chats.urls and api.urls
+create urls.py in chats
+
+7. CRUD is made
+
+8. create permission, PATCH is ok?
+
+9. 
+
+
+
+
+
