@@ -56,7 +56,43 @@ https://www.django-rest-framework.org/api-guide/settings/
 9. create unit test
 docker exec -it djangorestframework-docker-heroku-chat_web_1 /bin/bash -c "cd api && python manage.py test chats.tests.ThreadTests.test_user_cannot_create_too_long_title"
 
+get_queryset
+is_public false の問題が残ったのでfail するtest を作っておく
 
 
+10. create threadmember
+
+11. test fast
+CRUDそれぞれについて考えてみる。
+まず、createはownerだけができる必要がある。
+重複はなしにしとくかなあ
+readはthreadmember（もちろんownerも） はみることができる
+Updateは別にいらないか
+Deleteはownerだけ
+
+12. thread read permission など変更
+
+13. comment できるように
+
+14. page用のGET
+自分のthread一覧
+一番上のthreadのコメントを10個
+そのthreadのmemberを表示
+
+違うthreadをclickしたら commentとthread member のgetを投げる感じで
+
+15. Vue.js 、Nuxt でbiningする
 
 
+10. coverage
+ docker exec -it djangorestframework-docker-heroku-chat_web_1 /bin/bash -c "cd api && coverage run manage.py test chats"
+ docker exec -it djangorestframework-docker-heroku-chat_web_1 /bin/bash -c "cd api && coverage html"
+
+ .coveragerc file 作ってからもう一回実行
+
+11. perofrmance
+ silk install
+ settings.py
+ installed app & middleware
+ migrate
+ http://localhost:8000/silk/request

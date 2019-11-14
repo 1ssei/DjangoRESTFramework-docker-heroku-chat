@@ -1,4 +1,9 @@
+# core
 Django==2.2.4
 djangorestframework==3.10.1
-gunicorn==19.9.0
 django-filter==2.2.0
+# test
+coverage==4.5.3
+django-silk==3.0.2 # Performance
+# server
+gunicorn==19.9.0

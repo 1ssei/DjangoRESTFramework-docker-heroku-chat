@@ -2,3 +2,5 @@
 api/static/admin/*
 api/static/rest_framework/*
 *DS_Store
+api/htmlcov/*
+api/.coverage
