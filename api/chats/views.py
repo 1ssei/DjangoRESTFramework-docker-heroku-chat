@@ -9,12 +9,21 @@ class ThreadPermission(UserPassesTestMixin):
     raise_exception = True
 
     def test_func(self):
-        return permission.OwnerPermission(self, models.Thread)
+        if not permission.OwnerPermission(self, models.Thread):
+            return False
+        if (self.request.method == 'GET') and ('pk' in self.kwargs):
+            thread = models.Thread.objects.get(id=self.kwargs['pk'])
+            if not thread.is_public:
+                return False
+        return True
 
 
 class ThreadViewSet(ThreadPermission, viewsets.ModelViewSet):
     """
     Thread CRUD, only owner can patch and delete thread.
     """
-    queryset = models.Thread.objects.all()
+    def get_queryset(self):
+        if self.request.method == 'GET':
+            return models.Thread.objects.all().filter(is_public=True)
+        return models.Thread.objects.all().order_by('id')
     serializer_class = serializer.ThreadSerializer

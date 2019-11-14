@@ -7,6 +7,8 @@ def OwnerPermission(self, model):
     userId = request.user.id
     if request.method in permissions.SAFE_METHODS:
         return True
+    if not request.user.is_authenticated:
+        return False
     if request.method == 'PUT':
         raise MethodNotAllowed('PUT')
     if request.method == 'POST':

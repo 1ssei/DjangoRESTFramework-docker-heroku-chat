@@ -45,9 +45,16 @@ create urls.py in chats
 
 7. CRUD is made
 
-8. create permission common file
+8. create permission -> common file
+
+9. too simple , paging filter
+add django-filter to requirements
+docker-compose build
+docker-compose up
+https://www.django-rest-framework.org/api-guide/settings/
 
 9. create unit test
+docker exec -it djangorestframework-docker-heroku-chat_web_1 /bin/bash -c "cd api && python manage.py test chats.tests.ThreadTests.test_user_cannot_create_too_long_title"
 
 
 
