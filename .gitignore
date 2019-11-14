@@ -1,6 +1,7 @@
 *.pyc
 api/static/admin/*
 api/static/rest_framework/*
+api/static/silk/*
 *DS_Store
 api/htmlcov/*
 api/.coverage

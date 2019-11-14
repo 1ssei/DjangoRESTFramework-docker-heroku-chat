@@ -60,15 +60,61 @@ get_queryset
 is_public false の問題が残ったのでfail するtest を作っておく
 
 
-10. create threadmember
+10. create threadmember model
 
-11. test fast
+11. serializer add user serializer
+userはidではなくUsername も出すとかはuserserializer側でやった方が今後も使う
+
+12. view and url
 CRUDそれぞれについて考えてみる。
 まず、createはownerだけができる必要がある。
 重複はなしにしとくかなあ
 readはthreadmember（もちろんownerも） はみることができる
 Updateは別にいらないか
 Deleteはownerだけ
+
+viewsets.ModelViewSet だとCRUD全てを実装してしまう
+permissionでraise error してもいいけどmixinで必要なviewだけ選ぶ方がおすすめ
+DRFの画面でも出てこなくなるし抜け道なくなりやすいから安全
+ちなみにstatus codeはHTTP_405_METHOD_NOT_ALLOWED
+
+具体的には以下から必要なものを親にする（一番下は必須！）
+
+mixins.ListModelMixin,
+mixins.CreateModelMixin,
+mixins.RetrieveModelMixin,
+mixins.UpdateModelMixin,
+mixins.DestroyModelMixin,
+viewsets.GenericViewSet
+
+今回は以下を採用
+GET系は今回はいらないかなあ　画面表示用で扱うかなあとも思うけど
+強いていうならmemberが多い時に問題にはなるのでLISTは実装するか
+mixins.ListModelMixin,
+mixins.CreateModelMixin,
+mixins.DestroyModelMixin,
+viewsets.GenericViewSet
+
+filter実装
+django_filtersをinstall
+simple だったので
+https://www.django-rest-framework.org/api-guide/filtering/#djangofilterbackend
+こちらで対応。commentでsearchかな　部分一致とか
+
+permission
+以下を実装する
+create：ownerだけができる　ただし、重複はなしにしとくかなあ
+read：threadmember（もちろんownerも） はみることができる
+Update:実装なし
+Delete：ownerだけ
+
+OwnerPermissionを使えば、あとはcreateの重複とreadの権限だけ
+それと忘れそうだったけどownerは自分をmemberから外すことはできないも追加した方がいい
+ownerの変更はしてもいいけどmemberから外すとややこしくなる
+＋ownerはthread作ったタイミングでthreadmemberになる必要あり。
+それはthreadのcreateのviewをいじる必要あり。
+
+11. test
 
 12. thread read permission など変更
 
