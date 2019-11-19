@@ -1,3 +1,13 @@
+0. 
+create er
+create api list
+start developing and testing
+upload to heroku
+developing front
+binding
+developing
+upload to aws
+
 0. user change
 createsuperuser
 
@@ -90,6 +100,8 @@ viewsets.GenericViewSet
 今回は以下を採用
 GET系は今回はいらないかなあ　画面表示用で扱うかなあとも思うけど
 強いていうならmemberが多い時に問題にはなるのでLISTは実装するか
+こういうのは仕様、画面に依存する
+memberの一覧を出すのかfacebook,insta見たいにpopupとかで無限スクロールするか
 mixins.ListModelMixin,
 mixins.CreateModelMixin,
 mixins.DestroyModelMixin,
@@ -108,17 +120,21 @@ read：threadmember（もちろんownerも） はみることができる
 Update:実装なし
 Delete：ownerだけ
 
-OwnerPermissionを使えば、あとはcreateの重複とreadの権限だけ
+OwnerPermissionは使えない　ownerというカラムを追加して無理やり統一してもいいけど
+ここでは完全に0からやってみる
 それと忘れそうだったけどownerは自分をmemberから外すことはできないも追加した方がいい
 ownerの変更はしてもいいけどmemberから外すとややこしくなる
 ＋ownerはthread作ったタイミングでthreadmemberになる必要あり。
 それはthreadのcreateのviewをいじる必要あり。
 
+->perform_createをthread の方に追加
+---- -> thread のtestにもtest_user_can_read_private_threadを追加 ----
+thread のreadはいらないな
+
 11. test
 
-12. thread read permission など変更
+13. comment
 
-13. comment できるように
 
 14. page用のGET
 自分のthread一覧

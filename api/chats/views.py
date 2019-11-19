@@ -4,6 +4,7 @@ from . import serializer
 from api import permission
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import PermissionDenied, MethodNotAllowed
 
 
 class ThreadPermission(UserPassesTestMixin):
@@ -13,9 +14,7 @@ class ThreadPermission(UserPassesTestMixin):
         if not permission.OwnerPermission(self, models.Thread):
             return False
         if (self.request.method == 'GET') and ('pk' in self.kwargs):
-            thread = models.Thread.objects.get(id=self.kwargs['pk'])
-            if not thread.is_public:
-                return False
+            raise MethodNotAllowed('Retrieve is not allowed')
         return True
 
 
@@ -26,21 +25,56 @@ class ThreadViewSet(ThreadPermission, viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.method == 'GET':
-            return models.Thread.objects.all().filter(is_public=True)
+            return models.Thread.objects.all().filter(
+                is_public=True).order_by('title')
         return models.Thread.objects.all().order_by('id')
     serializer_class = serializer.ThreadSerializer
+
+    def perform_create(self, serializer):
+        created_data = serializer.save()
+        models.ThreadMember(thread=created_data,
+                            user=created_data.owner).save()
 
 
 class ThreadMemberPermission(UserPassesTestMixin):
     raise_exception = True
 
     def test_func(self):
-        if not permission.OwnerPermission(self, models.Thread):
+        request = self.request
+        userId = request.user.id
+        if not request.user.is_authenticated:
             return False
-        if (self.request.method == 'GET') and ('pk' in self.kwargs):
-            thread = models.Thread.objects.get(id=self.kwargs['pk'])
-            if not thread.is_public:
-                return False
+        if self.request.method == 'GET':
+            if not ('thread' in request.GET):
+                raise PermissionDenied(
+                    "you need filtering ,\
+                     for e.g. v1/thread_members/?thread=1")
+            thread = models.Thread.objects.get(id=request.GET['thread'])
+            # Thread is not public and not member ->False
+            if (not thread.is_public) and \
+                (not models.ThreadMember.objects.filter(
+                    thread=thread, user_id=userId).exists()):
+                raise PermissionDenied("you cannot see this data")
+        elif request.method == 'POST':
+            # ONLY Thread Owner
+            thread = models.Thread.objects.get(id=request.POST['thread'])
+            # SELECT rerated or user model で比較 performance check
+            if thread.owner.id != userId:
+                raise PermissionDenied("only owner is allowed")
+            # 重複はNG
+            if models.ThreadMember.objects.filter(
+                    thread=request.POST['thread'],
+                    user_id=request.POST['user']).exists():
+                raise PermissionDenied("this data is already exist")
+        elif request.method == 'DELETE':
+            original_data = models.ThreadMember.objects.get(
+                pk=self.kwargs['pk'])
+            # ONLY Thread Owner ここもselect related かも
+            if original_data.thread.owner.id != userId:
+                raise PermissionDenied("only owner is allowed")
+            # Owner を消すことはできない
+            if original_data.user.id == original_data.thread.owner.id:
+                raise PermissionDenied("nobody can delete owner data")
         return True
 
 
