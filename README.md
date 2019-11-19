@@ -134,7 +134,28 @@ thread のreadはいらないな
 11. test
 
 13. comment
+検索に使われるのが左の方がいい？
+TESTは以下の観点
+ほぼowner permission だけど
+自分が参加していないThreadにはComment不可も必要
+全てのcommentをみるのはだめ
+?thread=1 とかの時だけ　かつ、そのthreadに自分が参加していること
+上記の　二つを実装する
 
+仕様によってtestは変わる
+例えば　自分のcommentを自分がthread から追い出された後に編集できるのかどうかとか
+今回は面倒なのでしないけどその辺は結構細かくなりがち
+
+結構同じコードを書くようになってきた
+if (not thread.is_public) and \
+                (not models.ThreadMember.objects.filter(
+                    thread=thread, user_id=userId).exists()):
+                raise PermissionDenied("you cannot see this data")
+→
+def has_permission(self, userId):
+        return (self.is_public) or \
+                (ThreadMember.objects.filter(
+                    thread=self, user_id=userId).exists())
 
 14. page用のGET
 自分のthread一覧

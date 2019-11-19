@@ -21,3 +21,17 @@ class ThreadMemberREADSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ThreadMember
         fields = '__all__'
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Comment
+        fields = '__all__'
+
+
+class CommentREADSerializer(serializers.ModelSerializer):
+    user = users_serializer.UserMinSerializer
+
+    class Meta:
+        model = models.ThreadMember
+        fields = '__all__'

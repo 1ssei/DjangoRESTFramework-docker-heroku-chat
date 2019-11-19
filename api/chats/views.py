@@ -50,10 +50,7 @@ class ThreadMemberPermission(UserPassesTestMixin):
                     "you need filtering ,\
                      for e.g. v1/thread_members/?thread=1")
             thread = models.Thread.objects.get(id=request.GET['thread'])
-            # Thread is not public and not member ->False
-            if (not thread.is_public) and \
-                (not models.ThreadMember.objects.filter(
-                    thread=thread, user_id=userId).exists()):
+            if not thread.has_permission(userId):
                 raise PermissionDenied("you cannot see this data")
         elif request.method == 'POST':
             # ONLY Thread Owner
@@ -99,3 +96,41 @@ class ThreadMemberViewSet(ThreadMemberPermission,
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['thread']
+
+
+class CommentPermission(UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self):
+        request = self.request
+        if not permission.OwnerPermission(self, models.Comment):
+            return False
+        userId = request.user.id
+        if request.method == 'GET':
+            if not ('thread' in request.GET):
+                raise PermissionDenied(
+                    "you need filtering ,\
+                     for e.g. v1/comments/?thread=1")
+            thread = models.Thread.objects.get(id=request.GET['thread'])
+            if not thread.has_permission(userId):
+                raise PermissionDenied("you cannot see this data")
+        elif request.method == 'POST':
+            thread = models.Thread.objects.get(id=request.POST['thread'])
+            if not thread.has_permission(userId):
+                raise PermissionDenied("you cannot see this data")
+        return True
+
+
+class CommentViewSet(CommentPermission, viewsets.ModelViewSet):
+    """
+    /comments/ POST
+    /comments/?thread=1 GET
+    /comments/1/ PATCH
+    /comments/1/ DELETE
+    """
+    queryset = models.Comment.objects.all().order_by('-id')
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return serializer.CommentREADSerializer
+        return serializer.CommentSerializer

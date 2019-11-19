@@ -3,6 +3,8 @@ from . import views
 
 
 router = routers.DefaultRouter()
-router.register(r'threads', views.ThreadViewSet, base_name='thread')
+router.register(r'threads', views.ThreadViewSet, base_name='threads')
 router.register(r'thread_members', views.ThreadMemberViewSet,
-                base_name='thread_member')
+                base_name='thread_members')
+router.register(r'comments', views.CommentViewSet,
+                base_name='comments')
