@@ -157,6 +157,11 @@ def has_permission(self, userId):
                 (ThreadMember.objects.filter(
                     thread=self, user_id=userId).exists())
 
+test ではsort とpagingも入れてみた
+後PATCHでownerとthreadは変えたらだめも入れた
+http://blog.qax.io/write-once-fields-with-django-rest-framework/
+mixin 使ってもいいけど単純なpermissionでやっとく
+
 14. page用のGET
 自分のthread一覧
 一番上のthreadのコメントを10個

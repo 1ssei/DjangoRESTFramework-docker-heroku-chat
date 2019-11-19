@@ -30,8 +30,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class CommentREADSerializer(serializers.ModelSerializer):
-    user = users_serializer.UserMinSerializer
+    owner = users_serializer.UserMinSerializer
 
     class Meta:
-        model = models.ThreadMember
+        model = models.Comment
         fields = '__all__'

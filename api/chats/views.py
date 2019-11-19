@@ -5,6 +5,7 @@ from api import permission
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied, MethodNotAllowed
+import json
 
 
 class ThreadPermission(UserPassesTestMixin):
@@ -109,8 +110,7 @@ class CommentPermission(UserPassesTestMixin):
         if request.method == 'GET':
             if not ('thread' in request.GET):
                 raise PermissionDenied(
-                    "you need filtering ,\
-                     for e.g. v1/comments/?thread=1")
+                    "you need filtering ,for e.g. v1/comments/?thread=1")
             thread = models.Thread.objects.get(id=request.GET['thread'])
             if not thread.has_permission(userId):
                 raise PermissionDenied("you cannot see this data")
@@ -118,6 +118,11 @@ class CommentPermission(UserPassesTestMixin):
             thread = models.Thread.objects.get(id=request.POST['thread'])
             if not thread.has_permission(userId):
                 raise PermissionDenied("you cannot see this data")
+        elif request.method == 'PATCH':
+            data = json.loads(request.body)
+            for i in ['thread', 'owner']:
+                if i in data:
+                    raise PermissionDenied("you cannot patch ", i)
         return True
 
 
