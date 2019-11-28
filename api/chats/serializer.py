@@ -9,14 +9,28 @@ class ThreadSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ThreadMinSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Thread
+        fields = ('title',)
+
+
 class ThreadMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ThreadMember
         fields = '__all__'
 
 
-class ThreadMemberREADSerializer(serializers.ModelSerializer):
-    user = users_serializer.UserMinSerializer
+class ThreadMemberUserREADSerializer(serializers.ModelSerializer):
+    user = users_serializer.UserMinSerializer()
+
+    class Meta:
+        model = models.ThreadMember
+        fields = '__all__'
+
+
+class ThreadMemberThreadREADSerializer(serializers.ModelSerializer):
+    thread = ThreadMinSerializer()
 
     class Meta:
         model = models.ThreadMember

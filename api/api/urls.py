@@ -10,7 +10,7 @@ api_router = routers.DefaultRouter()
 api_router.registry.extend(chats_router.registry)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    path('', views.TestView, name='test'),
+    path('', views.SessionView, name='test'),
     url(r'^v1/', include(api_router.urls)),
     path('silk/', include('silk.urls', namespace='silk'))
 ]

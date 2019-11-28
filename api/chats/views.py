@@ -28,7 +28,7 @@ class ThreadViewSet(ThreadPermission, viewsets.ModelViewSet):
         if self.request.method == 'GET':
             return models.Thread.objects.all().filter(
                 is_public=True).order_by('title')
-        return models.Thread.objects.all().order_by('id')
+        return models.Thread.objects.all()
     serializer_class = serializer.ThreadSerializer
 
     def perform_create(self, serializer):
@@ -54,12 +54,12 @@ class ThreadMemberPermission(UserPassesTestMixin):
             if not thread.has_permission(userId):
                 raise PermissionDenied("you cannot see this data")
         elif request.method == 'POST':
-            # ONLY Thread Owner
             thread = models.Thread.objects.get(id=request.POST['thread'])
-            # SELECT rerated or user model で比較 performance check
             if thread.owner.id != userId:
-                raise PermissionDenied("only owner is allowed")
-            # 重複はNG
+                if not thread.is_public:
+                    raise PermissionDenied("only owner is allowed")
+                if int(request.POST['user']) != userId:
+                    raise PermissionDenied("use your user id")
             if models.ThreadMember.objects.filter(
                     thread=request.POST['thread'],
                     user_id=request.POST['user']).exists():
@@ -67,10 +67,8 @@ class ThreadMemberPermission(UserPassesTestMixin):
         elif request.method == 'DELETE':
             original_data = models.ThreadMember.objects.get(
                 pk=self.kwargs['pk'])
-            # ONLY Thread Owner ここもselect related かも
             if original_data.thread.owner.id != userId:
                 raise PermissionDenied("only owner is allowed")
-            # Owner を消すことはできない
             if original_data.user.id == original_data.thread.owner.id:
                 raise PermissionDenied("nobody can delete owner data")
         return True
@@ -92,7 +90,7 @@ class ThreadMemberViewSet(ThreadMemberPermission,
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return serializer.ThreadMemberREADSerializer
+            return serializer.ThreadMemberUserREADSerializer
         return serializer.ThreadMemberSerializer
 
     filter_backends = [DjangoFilterBackend]

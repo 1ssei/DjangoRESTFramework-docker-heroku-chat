@@ -184,3 +184,7 @@ mixin 使ってもいいけど単純なpermissionでやっとく
  installed app & middleware
  migrate
  http://localhost:8000/silk/request
+
+ しまった、public thread の場合には自分でjoinする機能が必要
+ つまり、thread member のpermission,testで変更が必要
+ やっぱ設計だいじ
