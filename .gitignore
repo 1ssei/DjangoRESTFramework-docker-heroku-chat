@@ -5,3 +5,4 @@ api/static/silk/*
 *DS_Store
 api/htmlcov/*
 api/.coverage
+api/api/env.py

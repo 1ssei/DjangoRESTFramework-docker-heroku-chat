@@ -188,3 +188,5 @@ mixin 使ってもいいけど単純なpermissionでやっとく
  しまった、public thread の場合には自分でjoinする機能が必要
  つまり、thread member のpermission,testで変更が必要
  やっぱ設計だいじ
+
+ social-auth-app-django SNS Login

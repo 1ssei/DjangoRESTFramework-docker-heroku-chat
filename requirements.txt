@@ -2,6 +2,7 @@
 Django==2.2.4
 djangorestframework==3.10.1
 django-filter==2.2.0
+social-auth-app-django==3.1.0 #SNS LOGIN
 # test
 coverage==4.5.3
 django-silk==3.0.2 # Performance
