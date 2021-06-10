@@ -1,5 +1,5 @@
 # core
-Django==2.2.4
+Django==2.2.24
 djangorestframework==3.10.1
 django-filter==2.2.0
 social-auth-app-django==3.1.0 #SNS LOGIN
